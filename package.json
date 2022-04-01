@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/YoussefBouhalla/Marhaba-Backend/issues"
   },
-  "homepage": "https://github.com/YoussefBouhalla/Marhaba-Backend#readme"
+  "homepage": "https://github.com/YoussefBouhalla/Marhaba-Backend#readme",
+  "devDependencies": {
+    "prisma": "^3.11.1"
+  }
 }
