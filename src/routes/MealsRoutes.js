@@ -13,7 +13,7 @@ router
     .post(MealsController.createMeal);
 
 router
-    .route("/order")
+    .route("/:idMeal/order")
     .post(MealsController.orderMeal);
 
 router
