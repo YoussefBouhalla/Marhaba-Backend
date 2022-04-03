@@ -20,8 +20,7 @@ router
     .get(UsersController.getDeliverersCount);
 
 router
-    .route("/commands")
+    .route("/:idDeliverer/commands")
     .get(UsersController.getDelivererAndTakenCommands);
-
 
 module.exports = router;
