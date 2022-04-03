@@ -49,8 +49,17 @@ const getAll = async (role) => {
     });
 }
 
-const getSingle = () => {
-    
+const getSingle = async (id) => {
+    return await prisma.users.findUnique({
+        where: {
+            user_id: id
+        },
+        include: {
+            clients: true,
+            deliverers:true,
+            admins: true
+        }
+    });
 }
 
 const getCount = () => {
@@ -59,5 +68,6 @@ const getCount = () => {
 
 module.exports = {
     create,
-    getAll
+    getAll,
+    getSingle
 }
