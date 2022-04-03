@@ -13,7 +13,7 @@ router
     .post(AnnouncementsController.createAnnouncement);
 
 router
-    .route("/order")
+    .route("/:idAnnouncement/order")
     .post(AnnouncementsController.orderAnnouncement);
 
 router
