@@ -2,7 +2,7 @@ const { PrismaClient } = require('@prisma/client')
 
 const prisma = new PrismaClient()
 
-const create = async (role, user_name, first_name, last_name, email, phone_number, password, image) => {
+const create = async (role, user_name, first_name, last_name, email, phone_number, password, image, address = "") => {
     let user = await prisma.users.create({
         data: {
             user_name,
@@ -20,6 +20,7 @@ const create = async (role, user_name, first_name, last_name, email, phone_numbe
         case 'client':
             await prisma.clients.create({
                 data: {
+                    address,
                     user_id : user.user_id
                 }
             })
@@ -50,4 +51,8 @@ const getSingle = () => {
 
 const getCount = () => {
 
+}
+
+module.exports = {
+    create
 }
