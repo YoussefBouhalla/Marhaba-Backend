@@ -41,12 +41,16 @@ const create = async (role, user_name, first_name, last_name, email, phone_numbe
     return user;
 }
 
-const getAll = () => {
-
+const getAll = async (role) => {
+    return await prisma.users.findMany({
+        where: {
+            role
+        }
+    });
 }
 
 const getSingle = () => {
-
+    
 }
 
 const getCount = () => {
@@ -54,5 +58,6 @@ const getCount = () => {
 }
 
 module.exports = {
-    create
+    create,
+    getAll
 }
