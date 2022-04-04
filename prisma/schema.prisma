@@ -122,20 +122,12 @@ model meal_pictures {
   @@index([meal_id], map: "meal_id")
 }
 
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
-model meal_types {
-  type_id Int
-  name    meal_types_name
-
-  @@ignore
-}
-
 model meals {
   meal_id           Int                 @id @default(autoincrement())
-  type_id           Int
   title             String              @db.VarChar(120)
   description       String              @db.Text
   price             Int
+  type              meals_type
   announcement_meal announcement_meal[] @ignore
   meal_commands     meal_commands[]
   meal_pictures     meal_pictures[]
@@ -153,7 +145,7 @@ model taken_commands {
   @@ignore
 }
 
-enum meal_types_name {
+enum meals_type {
   starter
   main
   dessert
