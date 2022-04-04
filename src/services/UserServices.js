@@ -64,11 +64,19 @@ const getSingle = async (role,id) => {
 
 const getCount = async(role = 'user') => {
     return await prisma.users.aggregate({
-        where: {
-            role
-        },
+        where: role === 'user' ? {} : {role} ,
         _count: {
             role: true
+        }
+    });
+}
+
+const filterByName = async(first_name) => {
+    return await prisma.users.findMany({
+        where: {
+            first_name: {
+                startsWith: first_name
+            }
         }
     });
 }
@@ -77,5 +85,6 @@ module.exports = {
     create,
     getAll,
     getSingle,
-    getCount
+    getCount,
+    filterByName
 }
