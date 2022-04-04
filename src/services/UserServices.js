@@ -49,25 +49,33 @@ const getAll = async (role) => {
     });
 }
 
-const getSingle = async (id) => {
+const getSingle = async (role,id) => {
     return await prisma.users.findUnique({
         where: {
             user_id: id
         },
         include: {
-            clients: true,
-            deliverers:true,
-            admins: true
+            clients: role === 'client' ? true : false,
+            deliverers: role === 'deliverer' ? true : false,
+            admins: role === 'admin' ? true : false
         }
     });
 }
 
-const getCount = () => {
-
+const getCount = async(role = 'user') => {
+    return await prisma.users.aggregate({
+        where: {
+            role
+        },
+        _count: {
+            role: true
+        }
+    });
 }
 
 module.exports = {
     create,
     getAll,
-    getSingle
+    getSingle,
+    getCount
 }
