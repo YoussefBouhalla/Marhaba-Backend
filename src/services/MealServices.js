@@ -42,7 +42,7 @@ const getCount = async (type = 'none') => {
 
 const mealSearch = async (options) => {
     return await prisma.meals.findMany({
-        where: options !== {} ?{
+        where: options ? {
             AND: {
                 title: options.title ? {
                     startsWith: options.title
@@ -57,10 +57,29 @@ const mealSearch = async (options) => {
     })
 }
 
+const deleteM = async (id) => {
+    return await prisma.meals.delete({
+        where: {
+            meal_id: id
+        }
+    })
+}
+
+const updateM = async (id, options) => {
+    return await prisma.meals.update({
+        where: {
+            meal_id: id
+        },
+        data: options ? options : {}
+    })
+}
+
 module.exports = {
     create,
     getAll,
     getSingle,
     getCount,
-    mealSearch
+    mealSearch,
+    deleteM,
+    updateM
 }
