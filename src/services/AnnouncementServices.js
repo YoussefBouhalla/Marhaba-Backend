@@ -43,6 +43,14 @@ const getSingle = async (id) => {
     });
 }
 
+const getCount = async () => {
+    return await prisma.announcements.aggregate({
+        _count: {
+            announcement_id: true
+        }
+    })
+}
+
 const announcementSearch = async (options) => {
     return await prisma.announcements.findMany({
         where: options ? {
@@ -70,5 +78,6 @@ module.exports = {
     create,
     getAll,
     getSingle,
-    announcementSearch
+    announcementSearch,
+    getCount
 }
