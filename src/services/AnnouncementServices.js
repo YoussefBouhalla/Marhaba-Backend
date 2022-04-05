@@ -74,10 +74,37 @@ const announcementSearch = async (options) => {
     })
 }
 
+const deleteA = async (id) => {
+    const delete_announcement_meals = prisma.announcement_meal.deleteMany({
+        where: {
+            announcement_id : id
+        }
+    })
+    
+    const delete_announcement = prisma.announcements.delete({
+        where: {
+            announcement_id : id
+        }
+    })
+
+    return await prisma.$transaction([delete_announcement_meals, delete_announcement])
+}
+
+const updateA = (id, options) => {
+    return await prisma.announcements.update({
+        where: {
+            meal_id: id
+        },
+        data: options ? options : {}
+    })
+}
+
 module.exports = {
     create,
     getAll,
     getSingle,
     announcementSearch,
-    getCount
+    getCount,
+    deleteA,
+    updateA
 }
