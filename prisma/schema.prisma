@@ -46,21 +46,19 @@ model deliverers {
   deliverer_id   Int              @id @default(autoincrement())
   user_id        Int
   users          users            @relation(fields: [user_id], references: [user_id], onUpdate: Restrict, map: "deliverers_ibfk_1")
-  taken_commands taken_commands[] @ignore
+  taken_commands taken_commands[]
 
   @@index([user_id], map: "user_id")
 }
 
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
 model announcement_meal {
   announcement_id Int
   meal_id         Int
   announcements   announcements @relation(fields: [announcement_id], references: [announcement_id], onUpdate: Restrict, map: "announcement_meal_ibfk_1")
   meals           meals         @relation(fields: [meal_id], references: [meal_id], onUpdate: Restrict, map: "announcement_meal_ibfk_2")
 
-  @@index([announcement_id], map: "announcement_id")
+  @@id([announcement_id, meal_id])
   @@index([meal_id], map: "meal_id")
-  @@ignore
 }
 
 model announcements {
@@ -71,7 +69,7 @@ model announcements {
   price             Int
   created_at        DateTime            @default(now()) @db.Timestamp(0)
   admins            admins              @relation(fields: [admin_id], references: [admin_id], onUpdate: Restrict, map: "announcements_ibfk_1")
-  announcement_meal announcement_meal[] @ignore
+  announcement_meal announcement_meal[]
 
   @@index([admin_id], map: "admin_id")
 }
@@ -84,7 +82,7 @@ model global_commands {
   taken          Boolean
   invoices       invoices[]
   meal_commands  meal_commands[]
-  taken_commands taken_commands[] @ignore
+  taken_commands taken_commands[]
 }
 
 model invoices {
@@ -128,21 +126,19 @@ model meals {
   description       String              @db.Text
   price             Int
   type              meals_type
-  announcement_meal announcement_meal[] @ignore
+  announcement_meal announcement_meal[]
   meal_commands     meal_commands[]
   meal_pictures     meal_pictures[]
 }
 
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
 model taken_commands {
   deliverer_id    Int
   gl_command_num  Int
   deliverers      deliverers      @relation(fields: [deliverer_id], references: [deliverer_id], onUpdate: Restrict, map: "taken_commands_ibfk_2")
   global_commands global_commands @relation(fields: [gl_command_num], references: [command_number], onUpdate: Restrict, map: "taken_commands_ibfk_1")
 
-  @@index([deliverer_id], map: "deliverer_id")
+  @@id([deliverer_id, gl_command_num])
   @@index([gl_command_num], map: "gl_command_num")
-  @@ignore
 }
 
 enum meals_type {
