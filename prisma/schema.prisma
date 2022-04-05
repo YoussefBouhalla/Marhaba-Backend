@@ -24,10 +24,9 @@ model users {
 }
 
 model admins {
-  admin_id      Int             @id @default(autoincrement())
-  user_id       Int
-  users         users           @relation(fields: [user_id], references: [user_id], onUpdate: Restrict, map: "admins_ibfk_1")
-  announcements announcements[]
+  admin_id Int   @id @default(autoincrement())
+  user_id  Int
+  users    users @relation(fields: [user_id], references: [user_id], onUpdate: Restrict, map: "admins_ibfk_1")
 
   @@index([user_id], map: "user_id")
 }
@@ -63,15 +62,11 @@ model announcement_meal {
 
 model announcements {
   announcement_id   Int                 @id @default(autoincrement())
-  admin_id          Int
   title             String              @db.VarChar(120)
   description       String              @db.Text
   price             Int
   created_at        DateTime            @default(now()) @db.Timestamp(0)
-  admins            admins              @relation(fields: [admin_id], references: [admin_id], onUpdate: Restrict, map: "announcements_ibfk_1")
   announcement_meal announcement_meal[]
-
-  @@index([admin_id], map: "admin_id")
 }
 
 model global_commands {
