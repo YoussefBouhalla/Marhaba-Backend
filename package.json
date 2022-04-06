@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start" : "nodemon index.js",
+    "start": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -19,10 +19,10 @@
   "homepage": "https://github.com/YoussefBouhalla/Marhaba-Backend#readme",
   "devDependencies": {
     "nodemon": "^2.0.15",
-    "prisma": "^3.11.1"
+    "prisma": "^3.12.0"
   },
   "dependencies": {
-    "@prisma/client": "^3.11.1",
+    "@prisma/client": "^3.12.0",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^16.0.0",
