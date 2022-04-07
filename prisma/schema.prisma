@@ -66,18 +66,20 @@ model announcements {
   description       String              @db.Text
   price             Int
   created_at        DateTime            @default(now()) @db.Timestamp(0)
+  announc_commands  announc_commands[]
   announcement_meal announcement_meal[]
 }
 
 model global_commands {
-  command_number Int              @id @default(autoincrement())
-  total_price    Int
-  total_quantity Int
-  status         String           @db.VarChar(30)
-  taken          Boolean
-  invoices       invoices[]
-  meal_commands  meal_commands[]
-  taken_commands taken_commands[]
+  command_number         Int                      @id @default(autoincrement())
+  total_price            Int                      @default(0)
+  total_quantity         Int                      @default(0)
+  status                 String                   @default("packaged") @db.VarChar(30)
+  taken                  Boolean                  @default(false)
+  global_announ_commands global_announ_commands[]
+  global_meals_commands  global_meals_commands[]
+  invoices               invoices[]
+  taken_commands         taken_commands[]
 }
 
 model invoices {
@@ -94,15 +96,13 @@ model invoices {
 }
 
 model meal_commands {
-  command_id      Int             @id @default(autoincrement())
-  meal_id         Int
-  price           Int
-  quantity        Int
-  gl_command_num  Int
-  global_commands global_commands @relation(fields: [gl_command_num], references: [command_number], onUpdate: Restrict, map: "meal_commands_ibfk_2")
-  meals           meals           @relation(fields: [meal_id], references: [meal_id], onUpdate: Restrict, map: "meal_commands_ibfk_1")
+  command_id            Int                     @id @default(autoincrement())
+  meal_id               Int
+  quantity              Int
+  total_price           Int
+  meals                 meals                   @relation(fields: [meal_id], references: [meal_id], onUpdate: Restrict, map: "meal_commands_ibfk_1")
+  global_meals_commands global_meals_commands[]
 
-  @@index([gl_command_num], map: "gl_command_num")
   @@index([meal_id], map: "meal_id")
 }
 
@@ -134,6 +134,37 @@ model taken_commands {
 
   @@id([deliverer_id, gl_command_num])
   @@index([gl_command_num], map: "gl_command_num")
+}
+
+model announc_commands {
+  command_id             Int                      @id @default(autoincrement())
+  announcement_id        Int
+  quantity               Int
+  total_price            Int
+  announcements          announcements            @relation(fields: [announcement_id], references: [announcement_id], onUpdate: Restrict, map: "announc_commands_ibfk_1")
+  global_announ_commands global_announ_commands[]
+
+  @@index([announcement_id], map: "announcement_id")
+}
+
+model global_announ_commands {
+  gl_command_num    Int
+  announ_command_id Int
+  announc_commands  announc_commands @relation(fields: [announ_command_id], references: [command_id], onUpdate: Restrict, map: "global_announ_commands_ibfk_2")
+  global_commands   global_commands  @relation(fields: [gl_command_num], references: [command_number], onUpdate: Restrict, map: "global_announ_commands_ibfk_1")
+
+  @@id([gl_command_num, announ_command_id])
+  @@index([announ_command_id], map: "announ_command_id")
+}
+
+model global_meals_commands {
+  gl_command_num  Int
+  meal_command_id Int
+  global_commands global_commands @relation(fields: [gl_command_num], references: [command_number], onUpdate: Restrict, map: "global_meals_commands_ibfk_1")
+  meal_commands   meal_commands   @relation(fields: [meal_command_id], references: [command_id], onUpdate: Restrict, map: "global_meals_commands_ibfk_2")
+
+  @@id([gl_command_num, meal_command_id])
+  @@index([meal_command_id], map: "meal_command_id")
 }
 
 enum meals_type {
