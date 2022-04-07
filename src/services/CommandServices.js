@@ -126,7 +126,29 @@ const getSingle = async (id , allData = true) => {
     return commands;
 }
 
+const getAll = async () => {
+    return await prisma.global_commands.findMany({
+        select :{
+            command_number: true,
+            status: true,
+            taken: true
+        } 
+    })
+}
+
+const getCount = async () => {
+    return await prisma.global_commands.groupBy({
+        by: ['taken'],
+        _count : {
+            command_number: true
+        }
+    })
+}
+
+
 module.exports = {
     create,
-    getSingle
+    getSingle, 
+    getAll, 
+    getCount
 }
