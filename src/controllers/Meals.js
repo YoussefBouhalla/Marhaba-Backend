@@ -1,14 +1,14 @@
-const createMeal = (req,res) => {}
+const createMeal = async (req,res) => {}
 
-const getMeals = (req,res) => {}
+const getMeals = async (req,res) => {}
 
-const orderMeal = (req,res) => {}
+const orderMeal = async (req,res) => {}
 
-const searchForMeals = (req,res) => {}
+const searchForMeals = async(req,res) => {}
 
 const getRecommendedMeals = (req,res) => {}
 
-const getMealsCount = (req,res) => {}
+const getMealsCount = async(req,res) => {}
 
 const updateMeal = (req,res) => {}
 
