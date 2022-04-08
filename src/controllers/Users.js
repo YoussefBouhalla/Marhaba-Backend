@@ -1,6 +1,8 @@
 const handleRegister = (req,res) => {}
 
-const handleLogin = (req,res) => {}
+const handleLogin = (req,res) => {
+    
+}
 
 const handleLogout = (req,res) => {}
 
