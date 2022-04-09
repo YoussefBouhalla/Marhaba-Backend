@@ -3,6 +3,8 @@ const router = express.Router();
 
 const {UsersController} = require("../controllers");
 
+const {JoiValidations , hashPassword} = require('../middlewares')
+
 router
     .route("/login")
     .post(UsersController.handleLogin);
@@ -13,7 +15,7 @@ router
 
 router
     .route("/register")
-    .post(UsersController.handleRegister);
+    .post(JoiValidations.validateUser , hashPassword ,UsersController.handleRegister);
 
 router
     .route("/count")
