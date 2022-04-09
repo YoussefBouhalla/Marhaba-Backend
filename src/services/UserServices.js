@@ -58,14 +58,15 @@ const getSingle = async (options) => {
 
 const getCount = async(options) => {
     return await prisma.users.aggregate({
-        where: {
+        where: options ? {
             role: options.role ? options.role : {},
             email: options.email ? options.email : {}
-        } ,
-        _count: {
+        } : {},
+        _count: options ? {
             role: options.role ? true : false,
             email: options.email ? true : false
-        }
+        } 
+        : {user_id: true}
     });
 }
 
