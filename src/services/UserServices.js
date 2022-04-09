@@ -2,25 +2,16 @@ const { PrismaClient } = require('@prisma/client')
 
 const prisma = new PrismaClient()
 
-const create = async (role, user_name, first_name, last_name, email, phone_number, password, image, address = "") => {
+const create = async (options) => {
     let user = await prisma.users.create({
-        data: {
-            user_name,
-            first_name,
-            last_name,
-            email,
-            phone_number,
-            password,
-            role,
-            image
-        }
+        data: options
     })
 
-    switch (role) {
+    switch (options.role) {
         case 'client':
             await prisma.clients.create({
                 data: {
-                    address,
+                    address: options.address,
                     user_id : user.user_id
                 }
             })
@@ -49,24 +40,31 @@ const getAll = async (role) => {
     });
 }
 
-const getSingle = async (role,id) => {
+const getSingle = async (options) => {
     return await prisma.users.findUnique({
-        where: {
-            user_id: id
-        },
-        include: {
-            clients: role === 'client' ? true : false,
-            deliverers: role === 'deliverer' ? true : false,
-            admins: role === 'admin' ? true : false
-        }
+
+        where: options.email
+        ? {email: options.email}
+        : {user_id: options.id},
+
+        include: options.role ? {
+            clients: options.role === 'client' ? true : false,
+            deliverers: options.role === 'deliverer' ? true : false,
+            admins: options.role === 'admin' ? true : false
+        } : false
+
     });
 }
 
-const getCount = async(role = 'user') => {
+const getCount = async(options) => {
     return await prisma.users.aggregate({
-        where: role === 'user' ? {} : {role} ,
+        where: {
+            role: options.role ? options.role : {},
+            email: options.email ? options.email : {}
+        } ,
         _count: {
-            role: true
+            role: options.role ? true : false,
+            email: options.email ? true : false
         }
     });
 }

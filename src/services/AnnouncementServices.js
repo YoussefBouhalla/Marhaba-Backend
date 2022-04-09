@@ -90,7 +90,7 @@ const deleteA = async (id) => {
     return await prisma.$transaction([delete_announcement_meals, delete_announcement])
 }
 
-const updateA = (id, options) => {
+const updateA = async (id, options) => {
     return await prisma.announcements.update({
         where: {
             meal_id: id
