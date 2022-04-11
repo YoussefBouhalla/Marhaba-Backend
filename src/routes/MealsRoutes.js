@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const {MealsController} = require("../controllers");
+const {JoiValidations} = require('../middlewares')
 
 router
     .route("/search")
@@ -10,7 +11,7 @@ router
 router
     .route("/")
     .get(MealsController.getMeals)
-    .post(MealsController.createMeal);
+    .post(JoiValidations.validateMeal ,MealsController.createMeal);
 
 router
     .route("/:idMeal/order")

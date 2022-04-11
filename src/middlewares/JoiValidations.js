@@ -23,6 +23,24 @@ const validateUser = async (req, res, next) => {
         next()
 }
 
+const validateMeal = async (req, res, next) => {
+    
+    const validation = await JoiUtils.MealSchema.validate(
+        {
+            title: req.body.title, 
+            description: req.body.description, 
+            price: parseInt(req.body.price), 
+            type: req.body.type
+        }
+    )
+
+    if (validation.error) throw res.status(401).json({path: validation.error.details[0].path[0] , details: validation.error.details[0].message})
+
+    req.value = await validation.value;
+    next()
+}
+
 module.exports = {
-    validateUser
+    validateUser,
+    validateMeal
 }

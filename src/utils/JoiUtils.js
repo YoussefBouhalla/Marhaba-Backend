@@ -43,7 +43,25 @@ const UserSchema = Joi.object({
 })
     .with('password', 'repeat_password');
 
+    const MealSchema = Joi.object({
+        title: Joi.string()
+            .min(10)
+            .max(50)
+            .required(),
+    
+        description: Joi.string()
+            .required(),
+    
+        price: Joi.number()
+            .required(),
+
+        type: Joi.string()
+        .min(4)
+        .max(10)
+        .required(),
+    })
 
 module.exports = {
-    UserSchema
+    UserSchema,
+    MealSchema
 }
