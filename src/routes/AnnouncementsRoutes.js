@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 
+const {JoiValidations} = require('../middlewares')
+
 const {AnnouncementsController} = require("../controllers");
 
 router
@@ -10,7 +12,7 @@ router
 router
     .route("/")
     .get(AnnouncementsController.getAnnouncements)
-    .post(AnnouncementsController.createAnnouncement);
+    .post(JoiValidations.validateAnnouncement ,AnnouncementsController.createAnnouncement);
 
 router
     .route("/:idAnnouncement/order")
