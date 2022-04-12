@@ -3,9 +3,13 @@ const router = express.Router();
 
 const {CommandsController} = require("../controllers");
 
-router
-    .route("/")
-    .post(CommandsController.createCommand);
+router 
+    .route("/:idClient")
+    .get(CommandsController.getClientCommands);
+    
+router 
+    .route("/untaked")
+    .get(CommandsController.getUntakedCommands);
 
 router
     .route("/count")
@@ -48,16 +52,8 @@ router
     .put(CommandsController.markAsDelivired);
 
 router 
-    .route("/untaked")
-    .get(CommandsController.getUntakedCommands);
-
-router 
     .route("/search")
     .post(CommandsController.searchForCommand);
-
-router 
-    .route("/:idClient")
-    .get(CommandsController.getClientCommands);
 
 router 
     .route("/:idCommand/details")

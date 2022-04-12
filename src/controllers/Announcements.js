@@ -1,4 +1,4 @@
-const {AnnouncementServices} = require('../services')
+const {AnnouncementServices, CommandServices} = require('../services')
 
 const createAnnouncement = async (req,res) => {
     try {
@@ -20,7 +20,21 @@ const getAnnouncements = async (req,res) => {
     }
 }
 
-const orderAnnouncement = (req,res) => {}
+const orderAnnouncement = async (req,res) => {
+    const quantity = parseInt(req.body.quantity);
+    const price = parseInt(req.body.price);
+    const announcement_id = parseInt(req.params.idAnnouncement)
+    let globalCommand;
+
+    const globalCommands = await CommandServices.checkCommandAvailability(6);
+
+    if(globalCommands.length === 0){
+        globalCommand = await CommandServices.create('global' , {user_id: 6})
+    }
+
+    await CommandServices.create('announcement' , {announcement_id , quantity, price , command_number: globalCommands.length > 0 ? globalCommands[0].command_number : globalCommand.command_number })
+    res.status(200).json({message: "created successfully!"})
+}
 
 const searchForAnnouncements = async (req,res) => {
     const options = {
