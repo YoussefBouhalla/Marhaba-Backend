@@ -1,4 +1,4 @@
-const {MealServices} = require('../services')
+const {MealServices, CommandServices} = require('../services')
 
 const createMeal = async (req,res) => {
     try {
@@ -18,7 +18,25 @@ const getMeals = async (req,res) => {
     }
 }
 
-const orderMeal = async (req,res) => {}
+const orderMeal = async (req,res) => {
+    const quantity = parseInt(req.body.quantity);
+    const price = parseInt(req.body.price);
+    const meal_id = parseInt(req.params.idMeal)
+    let globalCommand;
+
+    try {
+        const globalCommands = await CommandServices.checkCommandAvailability(6);
+    
+        if(globalCommands.length === 0){
+            globalCommand = await CommandServices.create('global' , {user_id: 6})
+        }
+    
+        await CommandServices.create('meal' , {meal_id , quantity, price , command_number: globalCommands.length > 0 ? globalCommands[0].command_number : globalCommand.command_number })
+        res.status(200).json({message: "created successfully!"})
+    } catch (error) {
+        res.status(400).json({error: error.message});
+    }
+}
 
 const searchForMeals = async(req,res) => {
     const options = {

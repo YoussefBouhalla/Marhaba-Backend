@@ -2,8 +2,6 @@ const { PrismaClient } = require('@prisma/client')
 
 const prisma = new PrismaClient()
 
-// options.announ_commands_connections:Array Ex : => [{announc_commands: {connect: {command_id : 11}}},{announc_commands: {connect: {command_id : 1}}}]
-// options.meals_commands_connections:Array Ex : => [{meal_commands: {connect: {command_id : 11}}},{meal_commands: {connect: {command_id : 1}}}]
 const create = async (type, options) => {
     switch (type) {
         case "announcement":
@@ -11,7 +9,12 @@ const create = async (type, options) => {
                 data: {
                     announcement_id : options.announcement_id,
                     quantity: options.quantity,
-                    total_price : options.price * options.quantity
+                    total_price : options.price * options.quantity,
+                    global_announ_commands : {
+                        create: [
+                            {global_commands: {connect : {command_number: options.command_number}}}
+                        ]
+                    }
                 }
             });
             break;
@@ -21,7 +24,12 @@ const create = async (type, options) => {
                 data: {
                     meal_id : options.meal_id,
                     quantity: options.quantity,
-                    total_price : options.price * options.quantity
+                    total_price : options.price * options.quantity,
+                    global_meals_commands : {
+                        create: [
+                            {global_commands: {connect : {command_number: options.command_number}}}
+                        ]
+                    }
                 }
             });
             break;
@@ -29,13 +37,7 @@ const create = async (type, options) => {
         case "global":
             return await prisma.global_commands.create({
                 data: {
-                    global_announ_commands : options && options.announ_commands_connections ? {
-                        create : options.announ_commands_connections
-                    } : {},
-
-                    global_meals_commands : options && options.meals_commands_connections ? {
-                        create : options.meals_commands_connections
-                    } : {}
+                    user_id: options.user_id
                 }
             });
             break;
@@ -100,7 +102,7 @@ const getSingle = async (id , allData = true) => {
         })
     }
     
-    let commands =  await prisma.global_commands.findUnique({
+    return await prisma.global_commands.findUnique({
         where: {
             command_number: id
         },
@@ -123,11 +125,11 @@ const getSingle = async (id , allData = true) => {
         } : false
     })
 
-    return commands;
 }
 
-const getAll = async () => {
+const getAll = async (options) => {
     return await prisma.global_commands.findMany({
+        where: options ? options : {},
         select :{
             command_number: true,
             status: true,
@@ -136,12 +138,59 @@ const getAll = async () => {
     })
 }
 
-const getCount = async () => {
-    return await prisma.global_commands.groupBy({
-        by: ['taken'],
+const checkCommandAvailability = async (id) => {
+    return  await prisma.global_commands.findMany({
+        where: {
+            user_id: id
+        },
+        select :{
+            command_number: true,
+        }          
+    })
+}
+
+const getCount = async (options) => {
+    return await prisma.global_commands.aggregate({
+        where : options ? {
+            [options.type] : options.value
+        } : {},
         _count : {
             command_number: true
         }
+    })
+}
+
+const take = async (idCommand , idDeliverer) => {
+    return await prisma.global_commands.update({
+        where: {
+            command_number: idCommand
+        },
+        data: {
+            taken: true,
+            deliverer_id: idDeliverer
+        }
+    })
+}
+
+const untake = async (idCommand) => {
+    return await prisma.global_commands.update({
+        where: {
+            command_number: idCommand
+        },
+        data: {
+            taken: false,
+            deliverer_id: null
+        }
+    })
+
+}
+
+const updateC = async (idCommand, {options}) => {
+    return await prisma.global_commands.update({
+        where: {
+            command_number: idCommand
+        },
+        data: options
     })
 }
 
@@ -150,5 +199,9 @@ module.exports = {
     create,
     getSingle, 
     getAll, 
-    getCount
+    getCount,
+    checkCommandAvailability,
+    take,
+    untake,
+    updateC
 }
