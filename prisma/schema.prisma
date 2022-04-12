@@ -8,19 +8,20 @@ datasource db {
 }
 
 model users {
-  user_id      Int          @id @default(autoincrement())
-  created_at   DateTime     @default(now()) @db.Timestamp(0)
-  user_name    String       @db.VarChar(30)
-  first_name   String       @db.VarChar(30)
-  last_name    String       @db.VarChar(30)
-  email        String       @unique(map: "email") @db.VarChar(60)
-  phone_number String       @db.VarChar(30)
-  password     String       @db.VarChar(120)
-  role         String       @db.VarChar(15)
-  image        String       @db.VarChar(60)
-  admins       admins[]
-  clients      clients[]
-  deliverers   deliverers[]
+  user_id         Int              @id @default(autoincrement())
+  created_at      DateTime         @default(now()) @db.Timestamp(0)
+  user_name       String           @db.VarChar(30)
+  first_name      String           @db.VarChar(30)
+  password        String           @db.Text
+  last_name       String           @db.VarChar(30)
+  email           String           @unique(map: "email") @db.VarChar(60)
+  phone_number    String           @db.VarChar(30)
+  role            String           @db.VarChar(15)
+  image           String           @db.VarChar(60)
+  admins          admins[]
+  clients         clients[]
+  deliverers      deliverers[]
+  global_commands global_commands?
 }
 
 model admins {
@@ -42,10 +43,9 @@ model clients {
 }
 
 model deliverers {
-  deliverer_id   Int              @id @default(autoincrement())
-  user_id        Int
-  users          users            @relation(fields: [user_id], references: [user_id], onUpdate: Restrict, map: "deliverers_ibfk_1")
-  taken_commands taken_commands[]
+  deliverer_id Int   @id @default(autoincrement())
+  user_id      Int
+  users        users @relation(fields: [user_id], references: [user_id], onUpdate: Restrict, map: "deliverers_ibfk_1")
 
   @@index([user_id], map: "user_id")
 }
@@ -76,10 +76,13 @@ model global_commands {
   total_quantity         Int                      @default(0)
   status                 String                   @default("packaged") @db.VarChar(30)
   taken                  Boolean                  @default(false)
+  confirmed              Boolean                  @default(false)
+  user_id                Int                      @unique(map: "user_id")
+  deliverer_id           Int?
+  users                  users                    @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "FK_global_commands_users")
   global_announ_commands global_announ_commands[]
   global_meals_commands  global_meals_commands[]
   invoices               invoices[]
-  taken_commands         taken_commands[]
 }
 
 model invoices {
@@ -124,16 +127,6 @@ model meals {
   announcement_meal announcement_meal[]
   meal_commands     meal_commands[]
   meal_pictures     meal_pictures[]
-}
-
-model taken_commands {
-  deliverer_id    Int
-  gl_command_num  Int
-  deliverers      deliverers      @relation(fields: [deliverer_id], references: [deliverer_id], onUpdate: Restrict, map: "taken_commands_ibfk_2")
-  global_commands global_commands @relation(fields: [gl_command_num], references: [command_number], onUpdate: Restrict, map: "taken_commands_ibfk_1")
-
-  @@id([deliverer_id, gl_command_num])
-  @@index([gl_command_num], map: "gl_command_num")
 }
 
 model announc_commands {
