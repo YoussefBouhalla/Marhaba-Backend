@@ -89,10 +89,10 @@ model invoices {
   invoice_id      Int             @id @default(autoincrement())
   gl_command_num  Int
   client_id       Int
-  delivery_date   DateTime        @db.DateTime(0)
-  payment_date    DateTime        @db.DateTime(0)
-  clients         clients         @relation(fields: [client_id], references: [client_id], onUpdate: Restrict, map: "invoices_ibfk_1")
-  global_commands global_commands @relation(fields: [gl_command_num], references: [command_number], onUpdate: Restrict, map: "invoices_ibfk_2")
+  delivery_date   DateTime        @default(now()) @db.DateTime(0)
+  payment_date    DateTime        @default(now()) @db.DateTime(0)
+  clients         clients         @relation(fields: [client_id], references: [client_id], onDelete: Cascade, map: "invoices_ibfk_1")
+  global_commands global_commands @relation(fields: [gl_command_num], references: [command_number], onDelete: Cascade, map: "invoices_ibfk_2")
 
   @@index([client_id], map: "client_id")
   @@index([gl_command_num], map: "gl_command_num")

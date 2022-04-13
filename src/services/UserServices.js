@@ -4,31 +4,26 @@ const prisma = new PrismaClient()
 
 const create = async (options) => {
     let user = await prisma.users.create({
-        data: options
+        data: { 
+            user_name: options.user_name,
+            first_name: options.first_name,
+            last_name: options.last_name,
+            password: options.password,
+            email: options.email,
+            phone_number: options.phone_number,
+            role: options.role,
+            image: options.image,
+            clients : options.role === 'client' ? {
+                create: {
+                    address: options.address
+                }
+            } : {},
+            deliverers : options.role === 'deliverer' ? {
+                create: {
+                }
+            } : {}
+        }
     })
-
-    switch (options.role) {
-        case 'client':
-            await prisma.clients.create({
-                data: {
-                    address: options.address,
-                    user_id : user.user_id
-                }
-            })
-            break;
-
-        case 'deliverer':
-            await prisma.deliverers.create({
-                data: {
-                    user_id : user.user_id
-                }
-            })
-            break;
-    
-        default:
-            break;
-    }
-
     return user;
 }
 

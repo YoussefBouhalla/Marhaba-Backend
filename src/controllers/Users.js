@@ -8,6 +8,7 @@ const handleRegister = async (req,res) => {
         await UserServices.create(req.value);
         res.status(200).json({meassage: "User created successfully!"});
     } catch (error) {
+        console.log(error)
         res.status(400).json({error: error.message});
     }
 }

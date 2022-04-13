@@ -185,7 +185,7 @@ const untake = async (idCommand) => {
 
 }
 
-const updateC = async (idCommand, {options}) => {
+const updateC = async (idCommand, options) => {
     return await prisma.global_commands.update({
         where: {
             command_number: idCommand
