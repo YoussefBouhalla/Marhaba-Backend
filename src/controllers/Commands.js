@@ -1,4 +1,4 @@
-const {CommandServices} = require('../services')
+const {CommandServices , InvoiceServices} = require('../services')
 
 const getCommandsCount = async (req,res) => {
     try {
@@ -89,8 +89,10 @@ const markAsDeliviring = async (req,res) => {
 
 const markAsDelivired = async (req,res) => {
     const command_number = parseInt(req.params.idCommand);
+    const client_id = parseInt(req.body.client_id);
     try {
         await CommandServices.updateC(command_number, {status: "delivired"});
+        await InvoiceServices.create({gl_command_num : command_number , client_id});
         res.status(200).json({message: "delivired!"})
     } catch (error) {
         res.status(400).json({error: error.message});

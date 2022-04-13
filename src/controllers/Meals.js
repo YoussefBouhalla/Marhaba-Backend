@@ -25,10 +25,10 @@ const orderMeal = async (req,res) => {
     let globalCommand;
 
     try {
-        const globalCommands = await CommandServices.checkCommandAvailability(6);
+        const globalCommands = await CommandServices.checkCommandAvailability(13);
     
         if(globalCommands.length === 0){
-            globalCommand = await CommandServices.create('global' , {user_id: 6})
+            globalCommand = await CommandServices.create('global' , {user_id: 13})
         }
     
         await CommandServices.create('meal' , {meal_id , quantity, price , command_number: globalCommands.length > 0 ? globalCommands[0].command_number : globalCommand.command_number })

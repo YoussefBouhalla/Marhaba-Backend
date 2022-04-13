@@ -10,7 +10,6 @@ router
 router
     .route("/")
     .get(InvoicesController.getInvoices)
-    .post(InvoicesController.createInvoice);
 
 router
     .route("/:idInvoice")
