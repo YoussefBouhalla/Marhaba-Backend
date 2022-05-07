@@ -20,14 +20,14 @@ const handleLogin = async (req,res) => {
         const user = await (await UserServices.getSingle({email: req.body.email}));
     
         if(!user) {
-            res.status(400).json({error: "email doesn't exist"})
+            res.status(200).json({error: {email: "email doesn't exist"}})
         }else {
             if (!req.body.password) {
-                res.status(400).json({error: "password is incorrect"});
+                res.status(200).json({error: { password: "password is incorrect"}});
             }else {
                 bcrypt.compare(req.body.password,user.password).then(result => {
                     if (!result) {
-                        res.status(400).json({error: "password is incorrect"});
+                        res.status(200).json({error: { password: "password is incorrect"}});
                     }else {
                         const accessToken = jwt.sign({id: user.user_id, role: user.role} , process.env.ACCESS_TOKEN_SECRET);
                         res.status(200).json({accessToken});
